@@ -1,19 +1,6 @@
-# Virtual Environment
-.venv/
-
-# Python
 __pycache__/
-*.py[cod]
-
-# Pytest
+*.pyc
+.venv/
 .pytest_cache/
-
-# Logs
-*.log
-
-# VS Code
-.vscode/
-
-# OS Files
-.DS_Store
-Thumbs.db
+tasks.db
+pytask.log
