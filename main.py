@@ -1,9 +1,13 @@
 import sys
 import importlib
 from exceptions import TaskError,InvalidTaskNumberError,TaskNotFoundError
+from database import initialize_database
+import logging
+logger = logging.getLogger(__name__)
 
 def main():
 
+    initialize_database()
     WELCOME_MSG="Welcome to PyTask"
 
 
@@ -26,6 +30,7 @@ def main():
         print(e)
 
     except Exception as e:
+        logger.exception("Unexpected error")
         print(e)
 
 

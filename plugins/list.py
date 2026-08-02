@@ -1,17 +1,17 @@
-from storage import load_tasks
+from storage import get_all_tasks
 
 NAME = "list"
 DESCRIPTION = "Display all tasks"
 
 
 def execute(arguments):
-        
-        tasks=load_tasks()
+    tasks = get_all_tasks()
 
-        for index,task in enumerate(tasks):
-                print(task)
+    if not tasks:
+        print("No tasks found.")
+        return
 
-     
-
+    for index, task in enumerate(tasks, start=1):
+        print(f"{index}. {task}")
 
     

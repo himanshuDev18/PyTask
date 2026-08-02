@@ -1,31 +1,26 @@
 from datetime import datetime
-from storage import load_tasks
+from storage import get_all_tasks
 
 NAME = "overdue"
 DESCRIPTION = "List overdue tasks"
 
 
 def execute(arguments):
+    tasks = get_all_tasks()
 
-    tasks= load_tasks()
+    today = datetime.today().date()
+    found = False
 
-    today=datetime.today()
-
-    found=False
-    for task in tasks:
+    for index, task in enumerate(tasks, start=1):
         if task.due_date is None:
             continue
 
-        due=datetime.strptime(task.due_date, "%Y-%m-%d")
+        due = datetime.strptime(task.due_date, "%Y-%m-%d").date()
 
-        if not task.completed and due<today:
-            print(f"{task} due({task.due_date})")
-            found =True
+        if not task.completed and due < today:
+            print(f"{index}. {task} (Due: {task.due_date})")
+            found = True
 
     if not found:
-        print("No Overdeu") 
-        
-
-    
-
+        print("No overdue tasks.")
 

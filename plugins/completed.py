@@ -1,4 +1,4 @@
-from storage import load_tasks
+from storage import get_all_tasks
 
 
 NAME = "completed"
@@ -6,7 +6,7 @@ DESCRIPTION = "Display all completed tasks"
 
 
 def execute(arguments):
-    tasks = load_tasks()
+    tasks = get_all_tasks()
 
     found = False
 

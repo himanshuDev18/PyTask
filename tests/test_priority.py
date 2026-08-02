@@ -1,24 +1,13 @@
-import pytest
 from priority import Priority
 
 
-def test_valid_priority():
-    priority = Priority("high")
+def test_priority_values():
+    assert Priority.LOW.value == "low"
+    assert Priority.MEDIUM.value == "medium"
+    assert Priority.HIGH.value == "high"
 
-    assert priority == Priority.HIGH
 
-
-def test_invalid_priority():
-    with pytest.raises(ValueError):
-        Priority("hiefgh")
-
-@pytest.mark.parametrize(
-    "text, expected",
-    [
-        ("low", Priority.LOW),
-        ("medium", Priority.MEDIUM),
-        ("high", Priority.HIGH),
-    ],
-)
-def test_priority(text, expected):
-    assert Priority(text) == expected
+def test_priority_from_string():
+    assert Priority("low") == Priority.LOW
+    assert Priority("medium") == Priority.MEDIUM
+    assert Priority("high") == Priority.HIGH

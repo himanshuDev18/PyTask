@@ -1,26 +1,79 @@
-import json
+from database import get_connection
 from task import Task
+from priority import Priority
 
 
-FILE_NAME = "tasks.json"
+def add_task(task: Task) -> None:
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            INSERT INTO tasks(title, completed, due_date, priority)
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                task.title,
+                task.completed,
+                task.due_date,
+                task.priority.value,
+            ),
+        )
 
 
-def load_tasks() -> list[Task]:
+def get_all_tasks() -> list[Task]:
+    with get_connection() as conn:
+        cursor = conn.cursor()
 
-    try:
-        with open(FILE_NAME, "r") as file:
-            data = json.load(file)
-            return [Task.from_dict(task) for task in data]
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+        cursor.execute(
+            """
+            SELECT id, title, completed, due_date, priority
+            FROM tasks
+            """
+        )
+
+        rows = cursor.fetchall()
+
+    return [
+        Task(
+            id=row[0],
+            title=row[1],
+            completed=bool(row[2]),
+            due_date=row[3],
+            priority=Priority(row[4]),
+        )
+        for row in rows
+    ]
 
 
+def update_task(task: Task) -> None:
+    with get_connection() as conn:
+        cursor = conn.cursor()
 
-def save_tasks(tasks: list[Task]) -> None:
+        cursor.execute(
+            """
+            UPDATE tasks
+            SET title = ?, completed = ?, due_date = ?, priority = ?
+            WHERE id = ?
+            """,
+            (
+                task.title,
+                task.completed,
+                task.due_date,
+                task.priority.value,
+                task.id,
+            ),
+        )
 
-    with open(FILE_NAME, "w") as file:
-        json.dump(
-            [task.to_dict() for task in tasks],
-            file,
-            indent=4
+
+def delete_task(task_id: int) -> None:
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            DELETE FROM tasks
+            WHERE id = ?
+            """,
+            (task_id,),
         )

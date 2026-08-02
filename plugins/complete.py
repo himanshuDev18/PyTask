@@ -1,5 +1,8 @@
-from storage import load_tasks, save_tasks
-from exceptions import TaskError,InvalidTaskNumberError
+from storage import get_all_tasks, update_task
+from storage import get_all_tasks, update_task
+from exceptions import TaskError, InvalidTaskNumberError
+import logging
+logger = logging.getLogger(__name__)
 
 NAME = "complete"
 DESCRIPTION = "Mark a task as completed"
@@ -12,18 +15,22 @@ def execute(arguments):
     try:
         index = int(arguments[0]) - 1
     except ValueError:
-        raise ValueError("Task number must be an integer.")
+        raise TaskError("Task number must be an integer.")
 
-    tasks = load_tasks()
+    tasks = get_all_tasks()
 
     if index < 0 or index >= len(tasks):
         raise InvalidTaskNumberError("Invalid task number.")
 
-    if tasks[index].completed:
-        raise TaskError("Task Already Completed")
+    task = tasks[index]
 
-    tasks[index].completed = True
+    if task.completed:
+        raise TaskError("Task already completed.")
 
-    save_tasks(tasks)
+    task.mark_completed()
 
-    print(f"Task '{tasks[index].title}' marked as completed.")
+    update_task(task)
+
+    logger.info("Task completed: %s", task.title)
+
+    print(f"Task '{task.title}' marked as completed.")

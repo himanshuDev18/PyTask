@@ -10,10 +10,11 @@ REQUIRED_ATTRIBUTES = (
     "execute",
 )
 
-def execute(arguments):
-    print("Available Commands:")
 
-    files = os.listdir("plugins")
+def execute(arguments):
+    print("Available Commands:\n")
+
+    files = sorted(os.listdir("plugins"))
 
     for file in files:
         if not file.endswith(".py") or file == "__init__.py":
@@ -23,4 +24,4 @@ def execute(arguments):
         module = importlib.import_module(f"plugins.{module_name}")
 
         if all(hasattr(module, attr) for attr in REQUIRED_ATTRIBUTES):
-            print(f"{module.NAME:<10} - {module.DESCRIPTION}")
+            print(f"{module.NAME:<12} - {module.DESCRIPTION}")

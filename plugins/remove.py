@@ -1,5 +1,7 @@
-from storage import load_tasks,save_tasks
-from exceptions import InvalidTaskNumberError,TaskError
+from storage import get_all_tasks, delete_task
+from exceptions import InvalidTaskNumberError, TaskError
+import logging
+logger = logging.getLogger(__name__)
 
 NAME = "remove"
 DESCRIPTION = "Remove a task by its number"
@@ -10,25 +12,19 @@ def execute(arguments):
         raise TaskError("Usage: python main.py remove <task_number>")
 
     try:
-        index=int(arguments[0])-1
-
+        index = int(arguments[0]) - 1
     except ValueError:
-        raise ValueError("index must be int")
+        raise TaskError("Task number must be an integer.")
 
-    else:
-        tasks=load_tasks()
+    tasks = get_all_tasks()
 
-        if (index>= len(tasks) or index< 0):
-            raise InvalidTaskNumberError("Invalid Task Number")
+    if index < 0 or index >= len(tasks):
+        raise InvalidTaskNumberError("Invalid task number.")
 
-        else:
-            removed_task=tasks.pop(index)
+    removed_task = tasks[index]
 
-            save_tasks(tasks)
+    delete_task(removed_task.id)
 
-            print(f"Task '{removed_task.title}' is removed")
+    logger.info("Task removed: %s", removed_task.title)
 
-
-
-
-    
+    print(f"Task '{removed_task.title}' removed successfully.")

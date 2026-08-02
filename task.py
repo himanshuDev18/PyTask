@@ -5,6 +5,7 @@ from priority import Priority
 @dataclass
 class Task:
     title: str
+    id: int | None = None
     completed: bool = False
     due_date: str | None = None
     priority: Priority = Priority.MEDIUM
